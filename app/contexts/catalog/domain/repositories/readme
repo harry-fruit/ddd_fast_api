@@ -1,0 +1,5 @@
+These are the abstractions that allow us to access the data layer.
+
+f.e
+
+We should not depend on the implementation of the repository, we should only depend on the interface.

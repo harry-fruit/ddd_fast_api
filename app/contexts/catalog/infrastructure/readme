@@ -1,0 +1,74 @@
+Como estruturar o(s) bancos de dados?
+
+The decision to have one database per bounded context depends on your architectural goals and trade-offs.
+
+📌 Approaches to Database per Context
+1️⃣ One Database Per Bounded Context (Recommended in Microservices)
+Each bounded context has its own database schema and is responsible for its data storage. This ensures high isolation and allows each context to evolve independently.
+
+✅ Pros:
+
+Strong modularity (contexts don't interfere with each other).
+Enables different database technologies for each context (e.g., SQL for orders, NoSQL for cart).
+Good for microservices.
+❌ Cons:
+
+Harder data consistency across contexts.
+More operational overhead (managing multiple databases).
+Cross-context queries require extra effort (event-driven sync or APIs).
+📌 Example Structure:
+
+sql
+Copiar
+Editar
+catalog/
+   ├── infrastructure/
+   │   ├── database.py  (Handles catalog-specific DB)
+   │   ├── repositories/
+   │   │   ├── produto_repository_sqlalchemy.py
+inventory/
+   ├── infrastructure/
+   │   ├── database.py  (Handles inventory-specific DB)
+   │   ├── repositories/
+   │   │   ├── estoque_repository_sqlalchemy.py
+Each context has its own database.py that connects to its own database instance.
+
+2️⃣ One Database with Separate Schemas per Context (Best for Monoliths)
+Instead of multiple databases, you use a single database but each bounded context has its own schema.
+
+✅ Pros:
+
+Better consistency while keeping logical boundaries.
+Easier to manage than multiple databases.
+Allows for cross-context queries when needed.
+❌ Cons:
+
+Still needs careful schema design to avoid context leaks.
+Less isolation compared to multiple databases.
+📌 Example Structure in PostgreSQL:
+
+sql
+Copiar
+Editar
+CREATE SCHEMA catalog;
+CREATE SCHEMA inventory;
+CREATE SCHEMA orders;
+Each schema has its own tables, and each database.py in the infrastructure folder connects to the respective schema.
+
+3️⃣ Single Database, Shared Schema (Tightly Coupled Monolith)
+All bounded contexts use the same database and same schema.
+
+✅ Pros:
+
+Easiest to manage (one database connection).
+Works well in simple monolithic applications.
+❌ Cons:
+
+Strong coupling between contexts.
+Hard to scale and refactor later
+
+Approach	                        Best For	                            Pros	                                Cons
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+One DB per Context	                Microservices	                        High modularity, different DB tech	    Harder to keep consistency
+One DB, Separate Schemas	        Monoliths with good isolation	        Easier queries, still modular	        More schema management
+One DB, Shared Schema	            Small apps	                            Simple setup	                        High coupling, harder scaling

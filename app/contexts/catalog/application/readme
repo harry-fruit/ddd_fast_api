@@ -1,0 +1,9 @@
+use_cases -> 
+    - **Location:** Inside the **application layer**.
+    - **Purpose:** Define the **orchestration of a business process** within the application.
+    - **Characteristics:**
+        - They **coordinate** domain logic, repositories, and external services.
+        - They **use domain entities and services** to execute business operations.
+        - They **handle transactions** and external interactions (databases, APIs, messaging).
+
+dtos -> Data Transfer Objects
